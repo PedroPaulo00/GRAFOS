@@ -1,0 +1,42 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+constexpr int MAX = 1024;
+
+vector<string> grade(MAX);
+
+void DFS(int X, int Y){
+    grade[X][Y] = 'o';
+    if (X + 1 < grade.size() && grade[X + 1][Y] == '.') DFS(X + 1, Y);
+    if (X - 1 >= 0 && grade[X - 1][Y] == '.') DFS(X - 1, Y);
+    if (Y + 1 < grade[X].size() && grade[X][Y + 1] == '.') DFS(X, Y + 1);
+    if (Y - 1 >= 0 && grade[X][Y - 1] == '.') DFS(X, Y - 1);
+}
+
+int main() {
+    int N, M, C = 0;
+    cin >> N >> M;
+
+    grade.assign(N + 2, string(M + 2, 'o'));
+
+    for (int i = 1; i <= N; i++) {
+        cin >> grade[i];
+        grade[i] = "o" + grade[i] + "o";
+    }
+
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j <= M; j++) {
+            if (grade[i][j] == '.') {
+                DFS(i, j);
+                C++;
+            }
+        }
+    }
+
+    cout << C;
+}
