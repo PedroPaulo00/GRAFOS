@@ -25,9 +25,11 @@ int main(){
     grade.assign(N + 2, string(M + 2, 'o'));
 
     for (int i = 1; i <= N; i++){
-        cin >> grade[i];
-        grade[i] = "o" + grade[i] + "o";
+        string row;
+        cin >> row;
+        grade[i] = "o" + row + "o";
     }
+
 
     for (int i = 1; i <= N; i++){
         for (int j = 1; j <= M; j++){
