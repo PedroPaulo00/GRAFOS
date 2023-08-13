@@ -2,7 +2,6 @@
 // BEECROWD 1907 - COLORAÇÃO DE CENÁRIOS DE JOGOS
 // PEDRO PAULO DE LIMA E WILLIAN ALMEIDA
 
-
 #include <iostream>
 #include <iomanip>
 #include <cmath>
@@ -11,12 +10,15 @@
 
 using namespace std;
 
-constexpr int MAX = 1024;
+constexpr int MAX = 1024; //define o tamanho máximo da grade
 
-vector<string> grade(MAX);
+vector<string> grade(MAX); //declara um vetor de strings para representar a grade 
 
+//função para realizar a busca em profundidade (DFS)
 void DFS(int X, int Y){
-    grade[X][Y] = 'o';
+    grade[X][Y] = 'o'; //marca a posição atual como visitada
+
+    //realiza a DFS nas posições adjacentes se forem pontos ('.')
     if (X + 1 < grade.size() && grade[X + 1][Y] == '.') DFS(X + 1, Y);
     if (X - 1 >= 0 && grade[X - 1][Y] == '.') DFS(X - 1, Y);
     if (Y + 1 < grade[X].size() && grade[X][Y + 1] == '.') DFS(X, Y + 1);
@@ -24,26 +26,28 @@ void DFS(int X, int Y){
 }
 
 int main(){
-    int N, M, C = 0;
-    cin >> N >> M;
+    int N, M, C = 0; //declara as variáveis para as dimensões da grade e contador
 
-    grade.assign(N + 2, string(M + 2, 'o'));
+    cin >> N >> M; //le as dimensões da grade
 
+    grade.assign(N + 2, string(M + 2, 'o')); //inicializa a grade com 'o'
+
+    //le as linhas da grade, marcando as bordas com 'o'
     for (int i = 1; i <= N; i++){
         string row;
         cin >> row;
         grade[i] = "o" + row + "o";
     }
 
-
+    //percorre a grade, contando as áreas de jogos com a DFS
     for (int i = 1; i <= N; i++){
         for (int j = 1; j <= M; j++){
             if (grade[i][j] == '.'){
-                DFS(i, j);
-                C++;
+                DFS(i, j); //inicia a DFS a partir da posição atual
+                C++; //incrementa o contador de áreas de jogos
             }
         }
     }
 
-    cout << C;
+    cout << C; //imprime o número de áreas de jogos encontradas
 }
