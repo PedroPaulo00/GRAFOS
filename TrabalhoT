@@ -3,51 +3,67 @@
 // PEDRO PAULO DE LIMA E WILLIAN ALMEIDA
 
 #include <iostream>
-#include <iomanip>
-#include <cmath>
 #include <vector>
-#include <string>
+#include <stack>
 
 using namespace std;
 
-constexpr int MAX = 1024; //define o tamanho máximo da grade
+int N, M; // Dimensões da imagem
+vector<string> imagem; // Matriz representando a imagem
+vector<vector<bool>> visitado; // Matriz de pixels visitados
 
-vector<string> grade(MAX); //declara um vetor de strings para representar a grade 
+// Direções para movimentação na matriz
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, 1, -1};
 
-//função para realizar a busca em profundidade (DFS)
-void DFS(int X, int Y){
-    grade[X][Y] = 'o'; //marca a posição atual como visitada
-
-    //realiza a DFS nas posições adjacentes se forem pontos ('.')
-    if (X + 1 < grade.size() && grade[X + 1][Y] == '.') DFS(X + 1, Y);
-    if (X - 1 >= 0 && grade[X - 1][Y] == '.') DFS(X - 1, Y);
-    if (Y + 1 < grade[X].size() && grade[X][Y + 1] == '.') DFS(X, Y + 1);
-    if (Y - 1 >= 0 && grade[X][Y - 1] == '.') DFS(X, Y - 1);
+// Função para verificar se uma posição (x,y) é válida
+bool ehValido(int x, int y) {
+    return x >= 0 && x < N && y >= 0 && y < M && imagem[x][y] == '.' && !visitado[x][y];
 }
 
-int main(){
-    int N, M, C = 0; //declara as variáveis para as dimensões da grade e contador
+// Função DFS (busca em profundidade) iterativa
+void busca(int startX, int startY) {
+    stack<pair<int, int>> pilha;
+    pilha.push({startX, startY});
 
-    cin >> N >> M; //le as dimensões da grade
+    while (!pilha.empty()) {
+        int x = pilha.top().first;
+        int y = pilha.top().second;
+        pilha.pop();
 
-    grade.assign(N + 2, string(M + 2, 'o')); //inicializa a grade com 'o'
+        if (ehValido(x, y)) {
+            visitado[x][y] = true;
+            
+            for (int i = 0; i < 4; i++) {
+                int novoX = x + dx[i];
+                int novoY = y + dy[i];
+                pilha.push({novoX, novoY});
+            }
+        }
+    }
+}
 
-    //le as linhas da grade, marcando as bordas com 'o'
-    for (int i = 1; i <= N; i++){
-        string row;
-        cin >> row;
-        grade[i] = "o" + row + "o";
+int main() {
+    cin >> N >> M;
+    imagem.resize(N);
+    visitado.assign(N, vector<bool>(M, false));
+
+    for (int i = 0; i < N; i++) {
+        cin >> imagem[i];
     }
 
-    //percorre a grade, contando as áreas de jogos com a DFS
-    for (int i = 1; i <= N; i++){
-        for (int j = 1; j <= M; j++){
-            if (grade[i][j] == '.'){
-                DFS(i, j); //inicia a DFS a partir da posição atual
-                C++; //incrementa o contador de áreas de jogos
+    int numCliques = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            // Se encontrarmos um pixel não visitado, aplicamos a busca em profundidade
+            if (imagem[i][j] == '.' && !visitado[i][j]) {
+                busca(i, j);
+                numCliques++;
             }
         }
     }
 
-    cout << C; //imprime o número de áreas de jogos encontradas
+    cout << numCliques << endl; // Exibir o número de cliques necessários
+
+    return 0;
 }
